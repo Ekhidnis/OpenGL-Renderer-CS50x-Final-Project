@@ -1,0 +1,27 @@
+What will your software do? 
+	It will render objects
+
+What features will it have? 
+	See outcomes
+
+How will it be executed?
+	I plan on doing it as a standalone executable
+
+What new skills will you need to acquire? 
+	OpenGL completely from scratch (I've never used any of its libraries)
+	Investigate deeper into vector math, linear math, 
+	Investigate deeper into rendering pipelines (As a Lead CG Generalist, I do understand some of it, but mostly on a surface-level)
+	Solidify my C++ knowledge (As an Unreal Engine Developer I do know C++ on a decent level)
+	
+
+What topics will you need to research?
+	Managing program loop, managing windows, managing input, rendering techniques and pipelines, importing and using 3D models
+
+Good outcome for your project?
+	It runs and shows an object
+
+A better outcome?
+	It runs, shows an object and the user can move around it
+
+The best outcome?
+	It runs, shows an object, user can move around it and it has textures. 
