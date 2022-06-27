@@ -428,3 +428,5 @@ FodyWeavers.xsd
 *.ipch
 .Debug/
 *.vs\
+*.db
+.vs/OpenGL Renderer (CS50x Final Project)/v17/.suo
