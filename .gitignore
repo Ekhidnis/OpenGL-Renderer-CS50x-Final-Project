@@ -427,4 +427,4 @@ FodyWeavers.xsd
 
 *.ipch
 .Debug/
-.vs/
+*.vs\
