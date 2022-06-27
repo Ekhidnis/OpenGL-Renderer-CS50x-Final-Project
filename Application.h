@@ -24,11 +24,13 @@ protected:
 	GLint InitStatus{ 0 };
 
 public:
+	int Initialize();
 	void InitGLFW();
 	void InitGLEW();
 	void MakeWindow();
 	void SetParameters();
 	void SetBuffer();
 	int GetInitStatus();
+	void Complete();
 	void Finalize();
 };

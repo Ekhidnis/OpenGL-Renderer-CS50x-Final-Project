@@ -3,16 +3,33 @@
 // Constructor
 Application::Application()
 {
-}
+	InitStatus = -1; // Application is not initialized
+};
+
+// -1 : Not Initialized
+// 0 : Initialized
+// 1 : Failed InitGLFW
+// 2 : Failed MakeWindow
+// 3 : Failed InitGLEW
+int Application::Initialize()
+{
+	if (InitStatus == -1) { InitGLFW(); }
+	if (InitStatus == -1) { MakeWindow(); }
+	if (InitStatus == -1) { InitGLEW(); }
+	if (InitStatus == -1) { SetParameters(); }
+	if (InitStatus == -1) { SetBuffer(); }
+	if (InitStatus == -1) { Complete(); }
+	return InitStatus;
+};
 
 // Initializes GLFW framework
 void Application::InitGLFW()
 {
 	if (!glfwInit())
 	{
-		fprintf(stdout, "ERROR #1: glfwInit failed, something is seriously wrong.");
-		Finalize();
 		InitStatus = 1;
+		fprintf(stdout, "%s: glfwInit failed, something is seriously wrong. (%i)\n", TITLE, InitStatus);
+		Finalize();
 	}
 };
 
@@ -22,11 +39,11 @@ void Application::MakeWindow()
 	AppWindow = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
 	if (!AppWindow)
 	{
-		fprintf(stdout, "ERROR #2: glfwCreateWindow failed.");
-		Finalize();
 		InitStatus = 2;
+		fprintf(stdout, "%s: glfwCreateWindow failed. (%i)\n", TITLE, InitStatus);
+		Finalize();
 	}
-}
+};
 
 // Initializes GLEW interface with GLFW window
 void Application::InitGLEW()
@@ -34,13 +51,12 @@ void Application::InitGLEW()
 	// Init GLEW
 	if (!glewInit())
 	{
-		fprintf(stdout, "ERROR #3: glewInit failed, something is seriously wrong.");
-		Finalize();
 		InitStatus = 3;
+		fprintf(stdout, "%s: glewInit failed, something is seriously wrong. (%i)\n", TITLE, InitStatus);
+		Finalize();
 	}
 	if (!GLEW_EXT_framebuffer_object) {}; // This will automatically call an exception if the extension does not exist
-}
-
+};
 
 // Sets OpenGL parameters
 void Application::SetParameters()
@@ -49,20 +65,29 @@ void Application::SetParameters()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OpenGLVersionMinor);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, bOpenGLAllowForwardCompat); // Allows forward compatibility 
 	glewExperimental = bOpenGLUseExperimental; // Is advised to include in case developer wants to use any new features
-}
+};
 
+// Sets buffer in window
 void Application::SetBuffer()
 {
 	glfwGetFramebufferSize(AppWindow, &bufferWidth, &bufferHeight);
-}
+};
 
+// Returns current InitStatus
 int Application::GetInitStatus()
 {
 	return InitStatus;
-}
+};
 
+// Cleans up 
 void Application::Finalize()
 {
 	glfwDestroyWindow(AppWindow);
 	glfwTerminate();
-}
+};
+
+void Application::Complete()
+{
+	InitStatus = 0;
+	fprintf(stdout, "%s: Succesfully initialized. (%i)\n", TITLE, InitStatus);
+};

@@ -5,26 +5,22 @@
 
 #include "Application.h"
 
-int main()
+int cleanup(Application* App, int InitStatus)
 {
-	Application* App = new Application;
-
-	while (App->GetInitStatus() == 0)
-	{
-		// Initialization
-		App->InitGLFW();
-		App->MakeWindow();
-		App->InitGLEW();
-		App->SetParameters();
-		App->SetBuffer();
-		
-
-		break;
-	}
-
-	// Cleanup and exit
-	int result = App->GetInitStatus();
 	App->Finalize();
 	delete(App);
-	return result;
-}
+	return InitStatus;
+};
+
+int main()
+{
+	// Make an application
+	Application* App = new Application;
+	if (App->Initialize() != 0)
+	{
+		return cleanup(App, App->GetInitStatus());
+	};
+
+	return cleanup(App, App->GetInitStatus());
+};
+
