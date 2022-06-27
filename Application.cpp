@@ -16,16 +16,22 @@ int Application::Initialize()
 	if (InitStatus == -1) { InitGLFW(); }
 	if (InitStatus == -1) { MakeWindow(); }
 	if (InitStatus == -1) { InitGLEW(); }
-	if (InitStatus == -1) { SetParameters(); }
-	if (InitStatus == -1) { SetBuffer(); }
 	if (InitStatus == -1) { Complete(); }
 	return InitStatus;
 };
 
+void Application::Setup()
+{
+	SetParameters();
+	SetBuffer();
+	SetContext();
+	SetViewportSize();
+}
+
 // Initializes GLFW framework
 void Application::InitGLFW()
 {
-	if (!glfwInit())
+	if (!glfwInit() )
 	{
 		InitStatus = 1;
 		fprintf(stdout, "%s: glfwInit failed, something is seriously wrong. (%i)\n", TITLE, InitStatus);
@@ -73,11 +79,28 @@ void Application::SetBuffer()
 	glfwGetFramebufferSize(AppWindow, &bufferWidth, &bufferHeight);
 };
 
+// Sets context for GLEW to use 
+void Application::SetContext()
+{
+	glfwMakeContextCurrent(AppWindow);
+}
+
+// Sets viewport size
+void Application::SetViewportSize()
+{
+	glViewport(0, 0, bufferWidth, bufferHeight);
+};
+
 // Returns current InitStatus
 int Application::GetInitStatus()
 {
 	return InitStatus;
 };
+
+GLFWwindow* Application::GetAppWindow()
+{
+	return AppWindow;
+}
 
 // Cleans up 
 void Application::Finalize()
@@ -91,3 +114,10 @@ void Application::Complete()
 	InitStatus = 0;
 	fprintf(stdout, "%s: Succesfully initialized. (%i)\n", TITLE, InitStatus);
 };
+
+void Application::DrawBuffer(GLclampf Red, GLclampf Green, GLclampf Blue, GLclampf Alpha)
+{
+	glClearColor(Red, Green, Blue, Alpha); // Clear window and set background color
+	glClear(GL_COLOR_BUFFER_BIT); // Clear color buffer
+	glfwSwapBuffers(AppWindow); // Swaps drawed buffer to the window you can see
+}

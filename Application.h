@@ -10,7 +10,7 @@ class Application
 public:	
 	Application();
 
-protected:
+private:
 	GLFWwindow* AppWindow;
 	const GLint WIDTH = 1280;
 	const GLint HEIGHT = 720;
@@ -25,12 +25,18 @@ protected:
 
 public:
 	int Initialize();
+	void Setup();
 	void InitGLFW();
 	void InitGLEW();
 	void MakeWindow();
 	void SetParameters();
 	void SetBuffer();
+	void SetContext();
+	void SetViewportSize();
 	int GetInitStatus();
+	GLFWwindow* GetAppWindow();
 	void Complete();
 	void Finalize();
+
+	void DrawBuffer(GLclampf Red, GLclampf Green, GLclampf Blue, GLclampf Alpha);
 };
