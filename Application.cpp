@@ -1,16 +1,23 @@
 #include "Application.h"
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////* INITIALIZATION *////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 // Constructor
 Application::Application()
 {
-	InitStatus = -1; // Application is not initialized
+	Initialize();
+	SetDefaults();
 };
 
-// -1 : Not Initialized
-// 0 : Initialized
-// 1 : Failed InitGLFW
-// 2 : Failed MakeWindow
-// 3 : Failed InitGLEW
+Application::~Application()
+{
+	Finalize();
+}
+
 int Application::Initialize()
 {
 	if (InitStatus == -1) { InitGLFW(); }
@@ -20,33 +27,13 @@ int Application::Initialize()
 	return InitStatus;
 };
 
-void Application::Setup()
-{
-	SetParameters();
-	SetBuffer();
-	SetContext();
-	SetViewportSize();
-}
-
 // Initializes GLFW framework
 void Application::InitGLFW()
 {
 	if (!glfwInit() )
 	{
-		InitStatus = 1;
+		InitStatus = 11;
 		fprintf(stdout, "%s: glfwInit failed, something is seriously wrong. (%i)\n", TITLE, InitStatus);
-		Finalize();
-	}
-};
-
-// Makes GLFW window
-void Application::MakeWindow()
-{
-	AppWindow = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
-	if (!AppWindow)
-	{
-		InitStatus = 2;
-		fprintf(stdout, "%s: glfwCreateWindow failed. (%i)\n", TITLE, InitStatus);
 		Finalize();
 	}
 };
@@ -57,41 +44,60 @@ void Application::InitGLEW()
 	// Init GLEW
 	if (!glewInit())
 	{
-		InitStatus = 3;
+		InitStatus = 13;
 		fprintf(stdout, "%s: glewInit failed, something is seriously wrong. (%i)\n", TITLE, InitStatus);
 		Finalize();
 	}
 	if (!GLEW_EXT_framebuffer_object) {}; // This will automatically call an exception if the extension does not exist
 };
 
-// Sets OpenGL parameters
-void Application::SetParameters()
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////* SETTERS *////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void Application::SetDefaults()
+{
+	SetGLFWParameters();
+	SetGLFWBuffer();
+	SetGLFWContext();
+	SetViewportSize();
+}
+
+void Application::SetGLFWParameters()
 {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OpenGLVersionMajor);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OpenGLVersionMinor);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, bOpenGLAllowForwardCompat); // Allows forward compatibility 
-	glewExperimental = bOpenGLUseExperimental; // Is advised to include in case developer wants to use any new features
 };
 
-// Sets buffer in window
-void Application::SetBuffer()
+void Application::SetGLEWParameters()
+{
+	glewExperimental = bOpenGLUseExperimental; // Is advised to include in case developer wants to use any new features
+}
+
+void Application::SetGLFWBuffer()
 {
 	glfwGetFramebufferSize(AppWindow, &bufferWidth, &bufferHeight);
 };
 
-// Sets context for GLEW to use 
-void Application::SetContext()
+void Application::SetGLFWContext()
 {
 	glfwMakeContextCurrent(AppWindow);
 }
 
-// Sets viewport size
 void Application::SetViewportSize()
 {
 	glViewport(0, 0, bufferWidth, bufferHeight);
 };
 
-// Returns current InitStatus
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////* GETTERS *////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 int Application::GetInitStatus()
 {
 	return InitStatus;
@@ -102,7 +108,12 @@ GLFWwindow* Application::GetAppWindow()
 	return AppWindow;
 }
 
-// Cleans up 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////* FINALIZATION *////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 void Application::Finalize()
 {
 	glfwDestroyWindow(AppWindow);
@@ -113,6 +124,23 @@ void Application::Complete()
 {
 	InitStatus = 0;
 	fprintf(stdout, "%s: Succesfully initialized. (%i)\n", TITLE, InitStatus);
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////* RENDERING *////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void Application::MakeWindow()
+{
+	AppWindow = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
+	if (!AppWindow)
+	{
+		InitStatus = 12;
+		fprintf(stdout, "%s: glfwCreateWindow failed. (%i)\n", TITLE, InitStatus);
+		Finalize();
+	}
 };
 
 void Application::DrawBuffer(GLclampf Red, GLclampf Green, GLclampf Blue, GLclampf Alpha)

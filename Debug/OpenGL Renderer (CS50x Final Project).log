@@ -1,2 +1,9 @@
 ﻿  Main.cpp
+  Statistics.cpp
+C:\Users\PC1\source\repos\OpenGL Renderer (CS50x Final Project)\Statistics.cpp(24,15): warning C4244: 'initializing': conversion from '_Rep' to 'int', possible loss of data
+          with
+          [
+              _Rep=__int64
+          ]
+  Generating Code...
   OpenGL Renderer (CS50x Final Project).vcxproj -> C:\Users\PC1\source\repos\OpenGL Renderer (CS50x Final Project)\Debug\OpenGL Renderer (CS50x Final Project).exe
