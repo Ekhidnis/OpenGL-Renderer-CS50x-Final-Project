@@ -1,9 +1,11 @@
 #pragma once
 
 #include <stdio.h>
+#include <iostream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "Errors.h"
 
 /* OpenGL application using GLEW/GLFW */
 class Application
@@ -13,16 +15,8 @@ public:
 	~Application();
 
 private:
-	//////////////////////
-	// -1 : Not Initialized
-	// 0 : Initialized
-	// 1 : Failed InitGLFW
-	// 2 : Failed MakeWindow
-	// 3 : Failed InitGLEW
-	//////////////////////
-	GLint InitStatus = -1;
-
-	GLFWwindow* AppWindow;
+	struct Errors::Status Status = Errors::Default;
+	GLFWwindow* AppWindow{ nullptr };
 	const GLint WIDTH = 1280;
 	const GLint HEIGHT = 720;
 	const char* TITLE = "Ekhidnis' OpenGL Renderer";
@@ -33,8 +27,6 @@ private:
 	int bufferWidth{ 0 };
 	int bufferHeight{ 0 };
 	
-
-
 public:
 	int Initialize();
 	void InitGLFW();
@@ -47,10 +39,12 @@ public:
 	void SetGLFWContext();
 	void SetViewportSize();
 
-	int GetInitStatus();
+	bool Ready();
+	int GetStatusID();
+	std::string GetStatusText();
 	GLFWwindow* GetAppWindow();
 
-	void Complete();
+	void Success();
 	void Finalize();
 
 	void MakeWindow();

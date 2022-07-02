@@ -3,18 +3,16 @@
 
 int main()
 {
-	Statistics Application_Statistics ((char*)"Application");
+	Statistics Stats_Application("Application");
 	Application Application_;
-	if (Application_.GetInitStatus() != 0)
-	{
-		return 1;
-	}
 
-	// main loop
+	if (!Application_.Ready()) { return Application_.GetStatusID(); };
+
 	while (!glfwWindowShouldClose(Application_.GetAppWindow()))
 	{
 		glfwPollEvents();
 		Application_.DrawBuffer(0.25f, 0, 0.5f, 0.5f);
+		Stats_Application.framecount++;
 	};
 
 	return 0;

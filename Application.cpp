@@ -6,34 +6,32 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// Constructor
 Application::Application()
 {
+	Status = Errors::ApplicationNotInit;
 	Initialize();
 	SetDefaults();
 };
 
 Application::~Application()
 {
-	Finalize();
 }
 
 int Application::Initialize()
 {
-	if (InitStatus == -1) { InitGLFW(); }
-	if (InitStatus == -1) { MakeWindow(); }
-	if (InitStatus == -1) { InitGLEW(); }
-	if (InitStatus == -1) { Complete(); }
-	return InitStatus;
+	if (Status.id == Errors::ApplicationNotInit.id) { InitGLFW(); }
+	if (Status.id == Errors::ApplicationNotInit.id) { MakeWindow(); }
+	if (Status.id == Errors::ApplicationNotInit.id) { InitGLEW(); }
+	if (Status.id == Errors::ApplicationNotInit.id) { Success(); }
+	return Status.id;
 };
 
-// Initializes GLFW framework
 void Application::InitGLFW()
 {
 	if (!glfwInit() )
 	{
-		InitStatus = 11;
-		fprintf(stdout, "%s: glfwInit failed, something is seriously wrong. (%i)\n", TITLE, InitStatus);
+		Status = Errors::ApplicationFail;
+		std::cout << TITLE << ": glfwInit failed.\n";
 		Finalize();
 	}
 };
@@ -44,8 +42,8 @@ void Application::InitGLEW()
 	// Init GLEW
 	if (!glewInit())
 	{
-		InitStatus = 13;
-		fprintf(stdout, "%s: glewInit failed, something is seriously wrong. (%i)\n", TITLE, InitStatus);
+		Status = Errors::ApplicationFail;
+		std::cout << TITLE << ": glewInit failed.\n";
 		Finalize();
 	}
 	if (!GLEW_EXT_framebuffer_object) {}; // This will automatically call an exception if the extension does not exist
@@ -97,16 +95,25 @@ void Application::SetViewportSize()
 ////////////////////////////////////////////////////////* GETTERS *////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-int Application::GetInitStatus()
+bool Application::Ready()
 {
-	return InitStatus;
+	return Status.id == Errors::ApplicationSuccess.id;
+}
+
+int Application::GetStatusID()
+{
+	return Status.id;
+};
+
+std::string Application::GetStatusText()
+{
+	return Status.text;
 };
 
 GLFWwindow* Application::GetAppWindow()
 {
 	return AppWindow;
-}
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,14 +123,15 @@ GLFWwindow* Application::GetAppWindow()
 
 void Application::Finalize()
 {
+	std::cout << GetStatusText() << "\n";
 	glfwDestroyWindow(AppWindow);
 	glfwTerminate();
 };
 
-void Application::Complete()
+void Application::Success()
 {
-	InitStatus = 0;
-	fprintf(stdout, "%s: Succesfully initialized. (%i)\n", TITLE, InitStatus);
+	Status = Errors::ApplicationSuccess;
+	std::cout << TITLE << ": Succesfully initialized.\n";
 };
 
 
@@ -137,8 +145,8 @@ void Application::MakeWindow()
 	AppWindow = glfwCreateWindow(WIDTH, HEIGHT, TITLE, NULL, NULL);
 	if (!AppWindow)
 	{
-		InitStatus = 12;
-		fprintf(stdout, "%s: glfwCreateWindow failed. (%i)\n", TITLE, InitStatus);
+		Status = Errors::ApplicationFail;
+		std::cout << TITLE << ": glfwCreateWindow failed.\n";
 		Finalize();
 	}
 };
