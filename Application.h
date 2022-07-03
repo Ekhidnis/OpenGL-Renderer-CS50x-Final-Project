@@ -17,11 +17,11 @@ public:
 private:
 	struct Errors::Status Status = Errors::Default;
 	GLFWwindow* AppWindow{ nullptr };
-	const GLint WIDTH = 1280;
-	const GLint HEIGHT = 720;
+	const int WIDTH = 1280;
+	const int HEIGHT = 720;
 	const char* TITLE = "Ekhidnis' OpenGL Renderer";
-	const GLint OpenGLVersionMajor = 4;
-	const GLint OpenGLVersionMinor = 6;
+	const int OpenGLVersionMajor = 4;
+	const int OpenGLVersionMinor = 6;
 	const bool bOpenGLUseExperimental = GL_TRUE;
 	const bool bOpenGLAllowForwardCompat = GL_TRUE;
 	int bufferWidth{ 0 };
@@ -32,9 +32,7 @@ public:
 	void InitGLFW();
 	void InitGLEW();
 
-	void SetDefaults();
 	void SetGLFWParameters();
-	void SetGLEWParameters();
 	void SetGLFWBuffer();
 	void SetGLFWContext();
 	void SetViewportSize();

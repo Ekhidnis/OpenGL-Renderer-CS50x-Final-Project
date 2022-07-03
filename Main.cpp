@@ -2,11 +2,12 @@
 #include "Statistics.h"
 
 int main()
-{
+{	
 	Statistics Stats_Application("Application");
 	Application Application_;
 
 	if (!Application_.Ready()) { return Application_.GetStatusID(); };
+
 
 	while (!glfwWindowShouldClose(Application_.GetAppWindow()))
 	{
