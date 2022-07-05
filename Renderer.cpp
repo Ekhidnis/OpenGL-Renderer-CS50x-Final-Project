@@ -44,7 +44,6 @@ void Renderer::CompileShaders()
 	glValidateProgram(shaderProgram);
 	if (!CheckProgramValidation()) 
 	{ return; };
-
 };
 
 void Renderer::CreateTriangle()
