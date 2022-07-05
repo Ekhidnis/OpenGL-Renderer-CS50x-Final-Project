@@ -46,5 +46,4 @@ public:
 	void Finalize();
 
 	void MakeWindow();
-	void DrawBuffer(GLclampf Red, GLclampf Green, GLclampf Blue, GLclampf Alpha);
 };
