@@ -5,10 +5,14 @@
 int main()
 {	
 	Statistics Statistics_("Runtime");
+	
 	Application Application_;
-	Renderer Renderer_;
-
 	if (!Application_.Ready()) { return Application_.GetStatusID(); };
+
+	Renderer Renderer_;
+	if (!Renderer_.Ready()) { return Renderer_.GetStatusID(); };
+
+	
 
 	while (!glfwWindowShouldClose(Application_.GetAppWindow()))
 	{
@@ -18,5 +22,4 @@ int main()
 	};
 
 	return 0;
-};
-
+}

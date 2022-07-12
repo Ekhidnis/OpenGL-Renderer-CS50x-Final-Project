@@ -1,41 +1,49 @@
 #include "Application.h"
 
 
+Application::Application()
+{
+	Status = Errors::ApplicationNotInit;
+	if (Initialize() != Errors::ApplicationSuccess.id)
+	{
+		Finalize();
+	};
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////* INITIALIZATION *////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-Application::Application()
-{
-	Status = Errors::ApplicationNotInit;
-
-	if (Initialize() == Errors::ApplicationSuccess.id)
-	{
-	
-	}
-};
-
-Application::~Application()
-{
-}
-
 int Application::Initialize()
 {
-	if (Status.id == Errors::ApplicationNotInit.id) { InitGLFW(); }
-	SetGLFWParameters();
+	if (Status.id == Errors::ApplicationNotInit.id) 
+	{ 
+		InitGLFW(); 
+		SetGLFWParameters();
+	}
+	
+	if (Status.id == Errors::ApplicationNotInit.id) 
+	{ 
+		MakeWindow(); 
+		SetGLFWBuffer();
+		SetViewportSize();
+		SetGLFWContext();
+	}
 
-	if (Status.id == Errors::ApplicationNotInit.id) { MakeWindow(); }
-	SetGLFWBuffer();
-	SetViewportSize();
-	SetGLFWContext();
+	if (Status.id == Errors::ApplicationNotInit.id) 
+	{ 
+		InitGLEW(); 
+	}
 
-	if (Status.id == Errors::ApplicationNotInit.id) { InitGLEW(); }
-
-	if (Status.id == Errors::ApplicationNotInit.id) { Success(); }
+	if (Status.id == Errors::ApplicationNotInit.id) 
+	{ 
+		Success(); 
+	}
 
 	return Status.id;
-};
+}
 
 void Application::InitGLFW()
 {
@@ -43,9 +51,8 @@ void Application::InitGLFW()
 	{
 		Status = Errors::ApplicationFail;
 		std::cout << TITLE << ": glfwInit failed.\n";
-		Finalize();
 	}
-};
+}
 
 void Application::InitGLEW()
 {
@@ -54,10 +61,14 @@ void Application::InitGLEW()
 	{
 		Status = Errors::ApplicationFail;
 		std::cout << TITLE << ": glewInit failed.\n";
-		Finalize();
 	}
 	if (!GLEW_EXT_framebuffer_object) {}; // This will automatically call an exception if the extension does not exist
-};
+}
+
+bool Application::Ready()
+{
+	return Status.id == Errors::ApplicationSuccess.id;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,12 +82,12 @@ void Application::SetGLFWParameters()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OpenGLVersionMinor);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, bOpenGLAllowForwardCompat); // Allows forward compatibility
-};
+}
 
 void Application::SetGLFWBuffer()
 {
 	glfwGetFramebufferSize(AppWindow, &bufferWidth, &bufferHeight);
-};
+}
 
 void Application::SetGLFWContext()
 {
@@ -86,32 +97,28 @@ void Application::SetGLFWContext()
 void Application::SetViewportSize()
 {
 	glViewport(0, 0, bufferWidth, bufferHeight);
-};
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////* GETTERS *////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool Application::Ready()
-{
-	return Status.id == Errors::ApplicationSuccess.id;
-}
 
 int Application::GetStatusID()
 {
 	return Status.id;
-};
+}
 
 std::string Application::GetStatusText()
 {
 	return Status.text;
-};
+}
 
 GLFWwindow* Application::GetAppWindow()
 {
 	return AppWindow;
-};
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,17 +131,17 @@ void Application::Finalize()
 	std::cout << GetStatusText() << "\n";
 	glfwDestroyWindow(AppWindow);
 	glfwTerminate();
-};
+}
 
 void Application::Success()
 {
 	Status = Errors::ApplicationSuccess;
 	std::cout << TITLE << ": Succesfully initialized.\n";
-};
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////* RENDERING *////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////* WINDOW *////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -145,6 +152,5 @@ void Application::MakeWindow()
 	{
 		Status = Errors::ApplicationFail;
 		std::cout << TITLE << ": glfwCreateWindow failed.\n";
-		Finalize();
 	}
-};
+}

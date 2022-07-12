@@ -11,7 +11,12 @@ namespace Errors
 	};
 
 	static Status Default{ 0, "" };
-	static Status ApplicationSuccess{ 101, "Application created succesfully." };
-	static Status ApplicationNotInit{ 100, "Application is not initialized." };
-	static Status ApplicationFail{ -102, "Application failed." };
+	
+	static Status ApplicationSuccess{ 11, "Application created succesfully." };
+	static Status ApplicationNotInit{ 10, "Application is not ready." };
+	static Status ApplicationFail{ -1, "Application failed." };
+	
+	static Status RendererSuccess{ 21, "Renderer created succesfully." };
+	static Status RendererNotInit{ 20, "Renderer is not ready." };
+	static Status RendererFail{ -2, "Renderer failed." };
 }

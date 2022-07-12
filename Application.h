@@ -10,23 +10,22 @@
 /* OpenGL application using GLEW/GLFW */
 class Application
 {
-public:	
+public:
 	Application();
-	~Application();
 
 private:
 	struct Errors::Status Status = Errors::Default;
 	GLFWwindow* AppWindow{ nullptr };
 	const int WIDTH = 1280;
 	const int HEIGHT = 720;
-	const char* TITLE = "Ekhidnis' OpenGL Renderer";
+	const char* TITLE = "Ekhidnis' OpenGL Engine";
 	const int OpenGLVersionMajor = 4;
 	const int OpenGLVersionMinor = 6;
 	const bool bOpenGLUseExperimental = GL_TRUE;
 	const bool bOpenGLAllowForwardCompat = GL_TRUE;
 	int bufferWidth{ 0 };
 	int bufferHeight{ 0 };
-	
+
 public:
 	int Initialize();
 	void InitGLFW();
