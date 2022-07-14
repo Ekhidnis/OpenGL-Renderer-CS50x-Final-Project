@@ -9,7 +9,7 @@ int main()
 	Application Application_;
 	if (!Application_.Ready()) { return Application_.GetStatusID(); };
 
-	Renderer Renderer_;
+	Renderer Renderer_(Application_.GetAppWindow());
 	if (!Renderer_.Ready()) { return Renderer_.GetStatusID(); };
 
 	
@@ -17,7 +17,7 @@ int main()
 	while (!glfwWindowShouldClose(Application_.GetAppWindow()))
 	{
 		glfwPollEvents();
-		Renderer_.DrawBuffer(Application_.GetAppWindow(), 0.25f, 0, 0.5f, 0.5f);
+		Renderer_.DrawBuffer();
 		Statistics_.framecount++;
 	};
 

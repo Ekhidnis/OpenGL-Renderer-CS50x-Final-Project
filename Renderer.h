@@ -6,12 +6,17 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Errors.h"
 
 class Renderer
 {
 public:
-	Renderer();
+	Renderer(GLFWwindow* Window);
 
 	const char* VertexShader =
 		"																				\n\
@@ -19,20 +24,18 @@ public:
 																						\n\
 		layout (location = 0) in vec3 pos;												\n\
 																						\n\
-		uniform float TranslationX;														\n\
-		uniform float TranslationY;														\n\
-		uniform float TranslationZ;														\n\
+		uniform mat4 model;																\n\
 		uniform float ScaleX;															\n\
 		uniform float ScaleY;															\n\
 		uniform float ScaleZ;															\n\
 																						\n\
 		void main()																		\n\
 		{																				\n\
-			gl_Position = vec4															\n\
+			gl_Position = model * vec4													\n\
 			(																			\n\
-				ScaleX * pos.x + TranslationX,											\n\
-				ScaleY * pos.y + TranslationY,											\n\
-				ScaleZ * pos.z + TranslationZ,											\n\
+				ScaleX * pos.x,															\n\
+				ScaleY * pos.y,															\n\
+				ScaleZ * pos.z,															\n\
 				1.0																		\n\
 			);																			\n\
 		}																				\n\
@@ -52,37 +55,35 @@ public:
 
 	const char* TITLE = "Renderer";
 	struct Errors::Status Status = Errors::Default;
+	GLFWwindow* AppWindow{ nullptr };
 
 	unsigned int vao{ 0 };
 	unsigned int vbo{ 0 };
 	unsigned int shaderProgram{ 0 };
-	unsigned int uniformXMove{ 0 };
 	
-	unsigned int UniformTranslationX{ 0 };
-	unsigned int UniformTranslationY{ 0 };
-	unsigned int UniformTranslationZ{ 0 };
+	unsigned int UniformTranslationModel{ 0 };
 
 	unsigned int UniformScaleX{ 0 };
 	unsigned int UniformScaleY{ 0 };
 	unsigned int UniformScaleZ{ 0 };
 
-	float OffsetUniformTranslationX{ 0.f };
-	float OffsetUniformTranslationY{ 0.f };
-	float OffsetUniformTranslationZ{ 0.f };
+	float OffsetTranslationX{ 0.f };
+	float OffsetTranslationY{ 0.f };
+	float OffsetTranslationZ{ 0.f };
 
-	float OffsetUniformScaleX = 0.05f;
-	float OffsetUniformScaleY = 0.05f; 
-	float OffsetUniformScaleZ = 0.05f;
+	float OffsetUniformScaleX = 0.1f;
+	float OffsetUniformScaleY = 0.1f;
+	float OffsetUniformScaleZ = 0.1f;
 
-	float OffsetUniformTranslationXLimit{ 1.f };
-	float OffsetUniformTranslationYLimit{ 1.f };
-	float OffsetUniformTranslationZLimit{ 1.f };
+	float OffsetTranslationXMax = 1.f;
+	float OffsetTranslationYMax = 1.f;
+	float OffsetTranslationZMax = 1.f;
 
 	float UniformStep = 0.01f;
 
-	bool UniformDirectionX{ false };
-	bool UniformDirectionY{ false };
-	bool UniformDirectionZ{ false };
+	bool DirectionX{ false };
+	bool DirectionY{ false };
+	bool DirectionZ{ false };
 	
 
 	int Initialize();
@@ -92,7 +93,7 @@ public:
 	void AddShader(int ShaderProgram, const char* ShaderCode, GLenum ShaderType);
 	void CompileShaderProgram();
 	void CreateTriangle();
-	void DrawBuffer(GLFWwindow* AppWindow, GLclampf Red, GLclampf Green, GLclampf Blue, GLclampf Alpha);
+	void DrawBuffer();
 	void UseProgram();
 
 	void GetUniformLocations(int ShaderProgram);

@@ -2,9 +2,10 @@
 #define NotInit Status.id == Errors::RendererNotInit.id
 
 
-Renderer::Renderer()
+Renderer::Renderer(GLFWwindow* Window)
 {
 	Status = Errors::RendererNotInit;
+	AppWindow = Window;
 	Initialize();
 }
 
@@ -58,9 +59,7 @@ std::string Renderer::GetStatusText()
 
 void Renderer::GetUniformLocations(int ShaderProgram)
 {
-	UniformTranslationX = glGetUniformLocation(ShaderProgram, "TranslationX");
-	UniformTranslationY = glGetUniformLocation(ShaderProgram, "TranslationY");
-	UniformTranslationZ = glGetUniformLocation(ShaderProgram, "TranslationZ");
+	UniformTranslationModel = glGetUniformLocation(ShaderProgram, "model");
 
 	UniformScaleX = glGetUniformLocation(ShaderProgram, "ScaleX");
 	UniformScaleY = glGetUniformLocation(ShaderProgram, "ScaleY");
@@ -70,53 +69,54 @@ void Renderer::GetUniformLocations(int ShaderProgram)
 void Renderer::UpdateUniforms()
 {
 	// translation x
-	if (UniformDirectionX)
+	if (DirectionX)
 	{
-		OffsetUniformTranslationX += UniformStep * 0.7f;
+		OffsetTranslationX += UniformStep;
 	}
 	else
 	{
-		OffsetUniformTranslationX -= UniformStep * 0.7f;
+		OffsetTranslationX -= UniformStep;
 	}
-	if (abs(OffsetUniformTranslationX) >= OffsetUniformTranslationXLimit)
+	if (abs(OffsetTranslationX) >= OffsetTranslationXMax)
 	{
-		UniformDirectionX = !UniformDirectionX;
+		DirectionX = !DirectionX;
 	}
 
 	// translation y
-	if (UniformDirectionY)
+	if (DirectionY)
 	{
-		OffsetUniformTranslationY += UniformStep * 1.1f;
+		OffsetTranslationY += UniformStep;
 	}
 	else
 	{
-		OffsetUniformTranslationY -= UniformStep * 1.1f;
+		OffsetTranslationY -= UniformStep;
 	}
-	if (abs(OffsetUniformTranslationY) >= OffsetUniformTranslationYLimit)
+	if (abs(OffsetTranslationY) >= OffsetTranslationYMax)
 	{
-		UniformDirectionY = !UniformDirectionY;
+		DirectionY = !DirectionY;
 	}
 
 	// translation z
-	if (UniformDirectionZ)
+	if (DirectionZ)
 	{
-		OffsetUniformTranslationZ += UniformStep * 1.3f;
+		OffsetTranslationZ += UniformStep;
 	}
 	else
 	{
-		OffsetUniformTranslationZ -= UniformStep * 1.3f;
+		OffsetTranslationZ -= UniformStep;
 	}
-	if (abs(OffsetUniformTranslationZ) >= OffsetUniformTranslationZLimit)
+	if (abs(OffsetTranslationZ) >= OffsetTranslationZMax)
 	{
-		UniformDirectionZ = !UniformDirectionZ;
+		DirectionZ = !DirectionZ;
 	}
 }
 
 void Renderer::AssignUniforms()
 {
-	glUniform1f(UniformTranslationX, OffsetUniformTranslationX);
-	glUniform1f(UniformTranslationY, OffsetUniformTranslationY);
-	glUniform1f(UniformTranslationZ, OffsetUniformTranslationZ);
+	glm::mat4 model{1.f};
+	model = glm::translate(model, glm::vec3(OffsetTranslationX, OffsetTranslationY, OffsetTranslationZ));
+
+	glUniformMatrix4fv(UniformTranslationModel, 1, GL_FALSE, glm::value_ptr(model));
 
 	glUniform1f(UniformScaleX, OffsetUniformScaleX);
 	glUniform1f(UniformScaleY, OffsetUniformScaleY);
@@ -198,11 +198,11 @@ void Renderer::UseProgram()
 {
 	glUseProgram(shaderProgram);
 
+	AssignUniforms();
+
 		glBindVertexArray(vao);
 
 			glDrawArrays(GL_TRIANGLES, 0, 3);
-
-			AssignUniforms();
 
 		glBindVertexArray(0);
 
@@ -210,11 +210,11 @@ void Renderer::UseProgram()
 
 }
 
-void Renderer::DrawBuffer(GLFWwindow* AppWindow, GLclampf Red, GLclampf Green, GLclampf Blue, GLclampf Alpha)
+void Renderer::DrawBuffer()
 {
 	UpdateUniforms();
 	
-	glClearColor(Red, Green, Blue, Alpha); // Clear window and set background color
+	glClearColor(0.f, 0.f, 0.f, 0.f); // Clear window and set background color
 	glClear(GL_COLOR_BUFFER_BIT); // Clear color buffer
 
 	UseProgram();

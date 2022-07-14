@@ -22,17 +22,21 @@ Create and initialize application (initializes opengl stack and operates created
 Create and initialize statistics (has timer and fps counter)
 Has Errors namespace where types of errors are declared and used throughout the code
 Draws triangle
+Moves triangle
 
 ## What aspects I had to invest my time in and gain knowledge about
 Implementing libraries
 GLEW library
 GLFW library
+GLM library
 Rendering pipeline
 Shaders
 Standard chrono library
 GLSL scripting
 VAO VBO
 Shader program
+Matrixes
+
 
 ## What issues I faced and how did I overcome them
 I could not render a color - Once I learned how does an OpenGL buffer works, I knew I had to set my GLFW context in order to let it render anything at all.
