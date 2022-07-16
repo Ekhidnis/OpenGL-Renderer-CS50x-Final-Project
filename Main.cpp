@@ -12,7 +12,6 @@ int main()
 	Renderer Renderer_(Application_.GetAppWindow());
 	if (!Renderer_.Ready()) { return Renderer_.GetStatusID(); };
 
-	
 
 	while (!glfwWindowShouldClose(Application_.GetAppWindow()))
 	{
@@ -20,6 +19,7 @@ int main()
 		Renderer_.DrawBuffer();
 		Statistics_.framecount++;
 	};
+
 
 	return 0;
 }

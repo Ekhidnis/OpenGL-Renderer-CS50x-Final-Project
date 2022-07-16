@@ -60,67 +60,84 @@ std::string Renderer::GetStatusText()
 void Renderer::GetUniformLocations(int ShaderProgram)
 {
 	UniformTranslationModel = glGetUniformLocation(ShaderProgram, "model");
-
-	UniformScaleX = glGetUniformLocation(ShaderProgram, "ScaleX");
-	UniformScaleY = glGetUniformLocation(ShaderProgram, "ScaleY");
-	UniformScaleZ = glGetUniformLocation(ShaderProgram, "ScaleZ");
 }
 
 void Renderer::UpdateUniforms()
 {
-	// translation x
-	if (DirectionX)
-	{
-		OffsetTranslationX += UniformStep;
-	}
-	else
-	{
-		OffsetTranslationX -= UniformStep;
-	}
-	if (abs(OffsetTranslationX) >= OffsetTranslationXMax)
-	{
-		DirectionX = !DirectionX;
-	}
+	// translation
+		// x
+		if (translationDirectionX)
+		{
+			offsetTranslationX += uniformStep;
+		}
+		else
+		{
+			offsetTranslationX -= uniformStep;
+		}
+		if (abs(offsetTranslationX) >= OffsetTranslationXLimit)
+		{
+			translationDirectionX = !translationDirectionX;
+		}
 
-	// translation y
-	if (DirectionY)
-	{
-		OffsetTranslationY += UniformStep;
-	}
-	else
-	{
-		OffsetTranslationY -= UniformStep;
-	}
-	if (abs(OffsetTranslationY) >= OffsetTranslationYMax)
-	{
-		DirectionY = !DirectionY;
-	}
+		// y
+		if (translationDirectionY)
+		{
+			offsetTranslationY += uniformStep;
+		}
+		else
+		{
+			offsetTranslationY -= uniformStep;
+		}
+		if (abs(offsetTranslationY) >= offsetTranslationYLimit)
+		{
+			translationDirectionY = !translationDirectionY;
+		}
 
-	// translation z
-	if (DirectionZ)
-	{
-		OffsetTranslationZ += UniformStep;
-	}
-	else
-	{
-		OffsetTranslationZ -= UniformStep;
-	}
-	if (abs(OffsetTranslationZ) >= OffsetTranslationZMax)
-	{
-		DirectionZ = !DirectionZ;
-	}
+		// z
+		if (translationDirectionZ)
+		{
+			offsetTranslationZ += uniformStep;
+		}
+		else
+		{
+			offsetTranslationZ -= uniformStep;
+		}
+		if (abs(offsetTranslationZ) >= offsetTranslationZLimit)
+		{
+			translationDirectionZ = !translationDirectionZ;
+		}
+
+	// rotation
+		offsetRotationAngleZ += uniformStep * 100.f;
+		if (offsetRotationAngleZ >= 360.f)
+		{
+			offsetRotationAngleZ -= 360.f;
+		}
+
+	// scale
+		if (scaleDirectionX)
+		{
+			offsetScaleX += uniformStep;
+		}
+		else
+		{
+			offsetScaleX -= uniformStep;
+		}
+		if (abs(offsetScaleX) >= offsetScaleXLimit)
+		{
+			scaleDirectionX = !scaleDirectionX;
+		}
 }
 
 void Renderer::AssignUniforms()
 {
 	glm::mat4 model{1.f};
-	model = glm::translate(model, glm::vec3(OffsetTranslationX, OffsetTranslationY, OffsetTranslationZ));
 
+	model = glm::translate(model, glm::vec3(offsetTranslationX, offsetTranslationY, offsetTranslationZ));
+	model = glm::rotate(model, offsetRotationAngleZ * toRadians, glm::vec3(0.f, 0.f, 1.f));
+	model = glm::scale(model, glm::vec3(offsetScaleX, offsetScaleY, offsetScaleZ));
+	
 	glUniformMatrix4fv(UniformTranslationModel, 1, GL_FALSE, glm::value_ptr(model));
-
-	glUniform1f(UniformScaleX, OffsetUniformScaleX);
-	glUniform1f(UniformScaleY, OffsetUniformScaleY);
-	glUniform1f(UniformScaleZ, OffsetUniformScaleZ);
 }
 
 
@@ -197,7 +214,7 @@ void Renderer::CreateTriangle()
 void Renderer::UseProgram()
 {
 	glUseProgram(shaderProgram);
-
+	
 	AssignUniforms();
 
 		glBindVertexArray(vao);

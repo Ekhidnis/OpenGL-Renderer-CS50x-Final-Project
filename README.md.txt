@@ -44,3 +44,4 @@ I could not pass std:string to fprintf function - I switched to <iostream> libra
 I had errors when tried to do premade structs in my Errors namespace - I made all premade structs static, so they're only created once
 Couldn't initialize GLEW - had to turn on glewExperimental mode so I can use modern OpenGL, had to set GLFW context before I initialize GLEW, had to check if glewInit() is equal to GLEW_OK instead of true
 Couldn't compile shaders - Had an error in glGetShaderiv which was returning shader parameter as false (GL_COMPILE_STATUS) instead of true
+Can't get uniform matrices in shaders to work with the renderer - My matrix was not initialized so I had to set it to identity matrix 

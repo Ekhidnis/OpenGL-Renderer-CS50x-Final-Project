@@ -25,17 +25,13 @@ public:
 		layout (location = 0) in vec3 pos;												\n\
 																						\n\
 		uniform mat4 model;																\n\
-		uniform float ScaleX;															\n\
-		uniform float ScaleY;															\n\
-		uniform float ScaleZ;															\n\
-																						\n\
 		void main()																		\n\
 		{																				\n\
 			gl_Position = model * vec4													\n\
 			(																			\n\
-				ScaleX * pos.x,															\n\
-				ScaleY * pos.y,															\n\
-				ScaleZ * pos.z,															\n\
+				pos.x,																	\n\
+				pos.y,																	\n\
+				pos.z,																	\n\
 				1.0																		\n\
 			);																			\n\
 		}																				\n\
@@ -57,33 +53,44 @@ public:
 	struct Errors::Status Status = Errors::Default;
 	GLFWwindow* AppWindow{ nullptr };
 
+	const float toRadians = 3.14159265f / 180.f;
+	const float uniformStep = 0.01f;
+
 	unsigned int vao{ 0 };
 	unsigned int vbo{ 0 };
 	unsigned int shaderProgram{ 0 };
 	
 	unsigned int UniformTranslationModel{ 0 };
 
-	unsigned int UniformScaleX{ 0 };
-	unsigned int UniformScaleY{ 0 };
-	unsigned int UniformScaleZ{ 0 };
+	float offsetTranslationX{ 0.f };
+	float offsetTranslationY{ 0.f };
+	float offsetTranslationZ{ 0.f };
 
-	float OffsetTranslationX{ 0.f };
-	float OffsetTranslationY{ 0.f };
-	float OffsetTranslationZ{ 0.f };
+	float OffsetTranslationXLimit = 1.f;
+	float offsetTranslationYLimit = 1.f;
+	float offsetTranslationZLimit = 1.f;
 
-	float OffsetUniformScaleX = 0.1f;
-	float OffsetUniformScaleY = 0.1f;
-	float OffsetUniformScaleZ = 0.1f;
+	bool translationDirectionX{ false };
+	bool translationDirectionY{ false };
+	bool translationDirectionZ{ false };
 
-	float OffsetTranslationXMax = 1.f;
-	float OffsetTranslationYMax = 1.f;
-	float OffsetTranslationZMax = 1.f;
+	float offsetRotationAngleX{ 0.f };
+	float offsetRotationAngleY{ 0.f };
+	float offsetRotationAngleZ{ 0.f };
 
-	float UniformStep = 0.01f;
+	float offsetScaleX = 0.1f;
+	float offsetScaleY = 0.1f;
+	float offsetScaleZ = 0.1f;
 
-	bool DirectionX{ false };
-	bool DirectionY{ false };
-	bool DirectionZ{ false };
+	float offsetScaleXLimit = 0.3f;
+	float offsetScaleYLimit = 0.3f;
+	float offsetScaleZLimit = 0.3f;
+
+	bool scaleDirectionX{ false };
+	bool scaleDirectionY{ false };
+	bool scaleDirectionZ{ false };
+
+
 	
 
 	int Initialize();
