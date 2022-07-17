@@ -72,9 +72,9 @@ public:
 
 	// translation
 	const float StepLoc = 0.005f; // Fixed amount of units to translate
-	const float OffsetTranslationXLimit = 1.f;
-	const float offsetTranslationYLimit = 1.f;
-	const float offsetTranslationZLimit = 1.f;
+	const float OffsetTranslationXLimit = 0.5f;
+	const float offsetTranslationYLimit = 0.5f;
+	const float offsetTranslationZLimit = 0.5f;
 
 	float offsetTranslationX{ 0.f };
 	float offsetTranslationY{ 0.f };
@@ -117,6 +117,7 @@ public:
 	void AssignUniforms();
 
 	// rendering
+	void EnableFeatures();
 	void AddShader(int ShaderProgram, const char* ShaderCode, GLenum ShaderType);
 	void CompileShaderProgram();
 	void CreatePyramid();

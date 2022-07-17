@@ -131,6 +131,10 @@ void Renderer::AssignUniforms()
 ////////////////////////////////////////////////////////* RENDERING *//////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void Renderer::EnableFeatures()
+{
+	glEnable(GL_DEPTH_TEST);
+};
 
 void Renderer::AddShader(int ShaderProgram, const char* ShaderCode, GLenum ShaderType)
 {
@@ -155,6 +159,8 @@ void Renderer::AddShader(int ShaderProgram, const char* ShaderCode, GLenum Shade
 
 void Renderer::CompileShaderProgram()
 {
+	EnableFeatures();
+
 	shaderProgram = glCreateProgram();
 
 	if (!shaderProgram)
@@ -236,7 +242,7 @@ void Renderer::DrawBuffer()
 	UpdateUniforms();
 	
 	glClearColor(0.f, 0.f, 0.f, 0.f); // Clear window and set background color
-	glClear(GL_COLOR_BUFFER_BIT); // Clear color buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color buffer
 
 	UseProgram();
 
