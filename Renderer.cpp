@@ -17,7 +17,7 @@ Renderer::Renderer(GLFWwindow* Window)
 
 int Renderer::Initialize()
 {
-	if (NotInit) { CreateTriangle(); };
+	if (NotInit) { CreatePyramid(); };
 	if (NotInit) { CompileShaderProgram(); };
 	if (NotInit) { Success(); };
 	
@@ -59,7 +59,7 @@ std::string Renderer::GetStatusText()
 
 void Renderer::GetUniformLocations(int ShaderProgram)
 {
-	UniformTranslationModel = glGetUniformLocation(ShaderProgram, "model");
+	UniformModelMatrix = glGetUniformLocation(ShaderProgram, "model");
 }
 
 void Renderer::UpdateUniforms()
@@ -68,11 +68,11 @@ void Renderer::UpdateUniforms()
 		// x
 		if (translationDirectionX)
 		{
-			offsetTranslationX += uniformStep;
+			offsetTranslationX += StepLoc;
 		}
 		else
 		{
-			offsetTranslationX -= uniformStep;
+			offsetTranslationX -= StepLoc;
 		}
 		if (abs(offsetTranslationX) >= OffsetTranslationXLimit)
 		{
@@ -82,11 +82,11 @@ void Renderer::UpdateUniforms()
 		// y
 		if (translationDirectionY)
 		{
-			offsetTranslationY += uniformStep;
+			offsetTranslationY += StepLoc;
 		}
 		else
 		{
-			offsetTranslationY -= uniformStep;
+			offsetTranslationY -= StepLoc;
 		}
 		if (abs(offsetTranslationY) >= offsetTranslationYLimit)
 		{
@@ -96,11 +96,11 @@ void Renderer::UpdateUniforms()
 		// z
 		if (translationDirectionZ)
 		{
-			offsetTranslationZ += uniformStep;
+			offsetTranslationZ += StepLoc;
 		}
 		else
 		{
-			offsetTranslationZ -= uniformStep;
+			offsetTranslationZ -= StepLoc;
 		}
 		if (abs(offsetTranslationZ) >= offsetTranslationZLimit)
 		{
@@ -108,24 +108,10 @@ void Renderer::UpdateUniforms()
 		}
 
 	// rotation
-		offsetRotationAngleZ += uniformStep * 100.f;
-		if (offsetRotationAngleZ >= 360.f)
+		offsetRotationAngleZ += StepRot;
+		if (offsetRotationAngleZ >= offsetRotationLimit)
 		{
-			offsetRotationAngleZ -= 360.f;
-		}
-
-	// scale
-		if (scaleDirectionX)
-		{
-			offsetScaleX += uniformStep;
-		}
-		else
-		{
-			offsetScaleX -= uniformStep;
-		}
-		if (abs(offsetScaleX) >= offsetScaleXLimit)
-		{
-			scaleDirectionX = !scaleDirectionX;
+			offsetRotationAngleZ -= offsetRotationLimit;
 		}
 }
 
@@ -134,10 +120,10 @@ void Renderer::AssignUniforms()
 	glm::mat4 model{1.f};
 
 	model = glm::translate(model, glm::vec3(offsetTranslationX, offsetTranslationY, offsetTranslationZ));
-	model = glm::rotate(model, offsetRotationAngleZ * toRadians, glm::vec3(0.f, 0.f, 1.f));
+	model = glm::rotate(model, offsetRotationAngleZ * toRadians, glm::vec3(1.f, 1.f, 1.f));
 	model = glm::scale(model, glm::vec3(offsetScaleX, offsetScaleY, offsetScaleZ));
 	
-	glUniformMatrix4fv(UniformTranslationModel, 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(UniformModelMatrix, 1, GL_FALSE, glm::value_ptr(model));
 }
 
 
@@ -184,31 +170,47 @@ void Renderer::CompileShaderProgram()
 	if (NotInit) { GetUniformLocations(shaderProgram);  }
 }
 
-void Renderer::CreateTriangle()
+void Renderer::CreatePyramid()
 {
-	float triangle[] = {
-		-1.f, -1.f, 0.f,
-		1.f, -1.0f, 0.f,
-		0.f, 1.f, 0.f
+	unsigned int elements[] = {
+		0, 3, 1,
+		3, 2, 1, 
+		2, 1, 0,
+		3, 2, 0
+
+	};
+	
+	float pyramid[] = {
+		-1.f, -1.f, 0.f, // 0 close left bottom
+		0.f, 0.f, 1.f, // 1 far center bottom
+		1.f, -1.0f, 0.f, // 2 close right bottom
+		0.f, 1.f, 0.f // 3 center top
 	};
 
 	// vao
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-		// VBO
+		// ebo
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+			
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+
+		// vbo
 		glGenBuffers(1, &vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 			// content
-			glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(pyramid), pyramid, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-		glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+			glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // It's important to unbind EBO after unbinding VAO
 }
 
 void Renderer::UseProgram()
@@ -218,10 +220,12 @@ void Renderer::UseProgram()
 	AssignUniforms();
 
 		glBindVertexArray(vao);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDrawElements(GL_TRIANGLES, 3 * 4, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glUseProgram(0);
 
