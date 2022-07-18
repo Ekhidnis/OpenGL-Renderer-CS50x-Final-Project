@@ -31,7 +31,7 @@ public:
 																						\n\
 		void main()																		\n\
 		{																				\n\
-			gl_Position = model * vec4													\n\
+			gl_Position = projection * model * vec4										\n\
 			(																			\n\
 				pos.x,																	\n\
 				pos.y,																	\n\
@@ -70,6 +70,12 @@ public:
 	unsigned int UniformModelMatrix{ 0 }; // local space
 	unsigned int UniformProjectionMatrix{ 0 }; // view space
 
+	// projection
+	float fov = 90.f;
+	float aspectRatio = 1280 / 720; // TODO un-hardcode this please, make a separate settings class or file
+	float nearPlaneLength = 0.001f;
+	float farPlaneLength = 10000.f;
+
 	// translation
 	const float StepLoc = 0.005f; // Fixed amount of units to translate
 	const float OffsetTranslationXLimit = 0.5f;
@@ -78,7 +84,7 @@ public:
 
 	float offsetTranslationX{ 0.f };
 	float offsetTranslationY{ 0.f };
-	float offsetTranslationZ{ 0.f };
+	float offsetTranslationZ = -0.5f;
 	bool translationDirectionX{ false };
 	bool translationDirectionY{ false };
 	bool translationDirectionZ{ false };

@@ -60,6 +60,7 @@ std::string Renderer::GetStatusText()
 void Renderer::GetUniformLocations(int ShaderProgram)
 {
 	UniformModelMatrix = glGetUniformLocation(ShaderProgram, "model");
+	UniformProjectionMatrix = glGetUniformLocation(ShaderProgram, "projection");
 }
 
 void Renderer::UpdateUniforms()
@@ -93,20 +94,6 @@ void Renderer::UpdateUniforms()
 			translationDirectionY = !translationDirectionY;
 		}
 
-		// z
-		if (translationDirectionZ)
-		{
-			offsetTranslationZ += StepLoc;
-		}
-		else
-		{
-			offsetTranslationZ -= StepLoc;
-		}
-		if (abs(offsetTranslationZ) >= offsetTranslationZLimit)
-		{
-			translationDirectionZ = !translationDirectionZ;
-		}
-
 	// rotation
 		offsetRotationAngleZ += StepRot;
 		if (offsetRotationAngleZ >= offsetRotationLimit)
@@ -117,10 +104,16 @@ void Renderer::UpdateUniforms()
 
 void Renderer::AssignUniforms()
 {
+	// projection matrix
+	glm::mat4 projection = glm::perspective(fov, aspectRatio, nearPlaneLength, farPlaneLength);
+
+	glUniformMatrix4fv(UniformProjectionMatrix, 1, GL_FALSE, glm::value_ptr(projection));
+	
+	// model matrix
 	glm::mat4 model{1.f};
 
 	model = glm::translate(model, glm::vec3(offsetTranslationX, offsetTranslationY, offsetTranslationZ));
-	model = glm::rotate(model, offsetRotationAngleZ * toRadians, glm::vec3(1.f, 1.f, 1.f));
+	// model = glm::rotate(model, offsetRotationAngleZ * toRadians, glm::vec3(1.f, 1.f, 1.f));
 	model = glm::scale(model, glm::vec3(offsetScaleX, offsetScaleY, offsetScaleZ));
 	
 	glUniformMatrix4fv(UniformModelMatrix, 1, GL_FALSE, glm::value_ptr(model));
