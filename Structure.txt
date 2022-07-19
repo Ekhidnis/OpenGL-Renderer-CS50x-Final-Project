@@ -1,0 +1,6 @@
+main
+	statistics statistics_
+	window window_
+		errors
+	renderer renderer_
+		errors

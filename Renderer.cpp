@@ -1,12 +1,12 @@
-#include "Renderer.h"
+#include "Renderer.hpp"
 #define NotInit Status.id == Errors::RendererNotInit.id
 
 
-Renderer::Renderer(GLFWwindow* Window)
+Renderer::Renderer(GLFWwindow* GLFWwindow_)
 {
-	Status = Errors::RendererNotInit;
-	AppWindow = Window;
-	Initialize();
+	Window = GLFWwindow_;
+
+	if (Window) { Initialize(); }
 }
 
 
@@ -17,11 +17,21 @@ Renderer::Renderer(GLFWwindow* Window)
 
 int Renderer::Initialize()
 {
+	if (NotInit) { EnableFeatures(); };
 	if (NotInit) { CreatePyramid(); };
 	if (NotInit) { CompileShaderProgram(); };
 	if (NotInit) { Success(); };
 	
 	return Status.id;
+}
+
+void Renderer::AdjustViewport()
+{
+	glfwGetFramebufferSize(Window, &WindowWidth, &WindowHeight);
+
+	WindowAspectRatio = WindowWidth / WindowHeight;
+
+	glViewport(0, 0, WindowWidth, WindowHeight);
 }
 
 void Renderer::Success()
@@ -80,20 +90,6 @@ void Renderer::UpdateUniforms()
 			translationDirectionX = !translationDirectionX;
 		}
 
-		// y
-		if (translationDirectionY)
-		{
-			offsetTranslationY += StepLoc;
-		}
-		else
-		{
-			offsetTranslationY -= StepLoc;
-		}
-		if (abs(offsetTranslationY) >= offsetTranslationYLimit)
-		{
-			translationDirectionY = !translationDirectionY;
-		}
-
 	// rotation
 		offsetRotationAngleZ += StepRot;
 		if (offsetRotationAngleZ >= offsetRotationLimit)
@@ -105,15 +101,15 @@ void Renderer::UpdateUniforms()
 void Renderer::AssignUniforms()
 {
 	// projection matrix
-	glm::mat4 projection = glm::perspective(fov, aspectRatio, nearPlaneLength, farPlaneLength);
+	glm::mat4 projection = glm::perspective(fov, WindowAspectRatio, nearPlaneLength, farPlaneLength);
 
 	glUniformMatrix4fv(UniformProjectionMatrix, 1, GL_FALSE, glm::value_ptr(projection));
 	
 	// model matrix
-	glm::mat4 model{1.f};
+	glm::mat4 model{ 1.f };
 
 	model = glm::translate(model, glm::vec3(offsetTranslationX, offsetTranslationY, offsetTranslationZ));
-	// model = glm::rotate(model, offsetRotationAngleZ * toRadians, glm::vec3(1.f, 1.f, 1.f));
+	model = glm::rotate(model, offsetRotationAngleZ * toRadians, glm::vec3(1.f, 1.f, 1.f));
 	model = glm::scale(model, glm::vec3(offsetScaleX, offsetScaleY, offsetScaleZ));
 	
 	glUniformMatrix4fv(UniformModelMatrix, 1, GL_FALSE, glm::value_ptr(model));
@@ -152,8 +148,6 @@ void Renderer::AddShader(int ShaderProgram, const char* ShaderCode, GLenum Shade
 
 void Renderer::CompileShaderProgram()
 {
-	EnableFeatures();
-
 	shaderProgram = glCreateProgram();
 
 	if (!shaderProgram)
@@ -232,6 +226,7 @@ void Renderer::UseProgram()
 
 void Renderer::DrawBuffer()
 {
+	AdjustViewport();
 	UpdateUniforms();
 	
 	glClearColor(0.f, 0.f, 0.f, 0.f); // Clear window and set background color
@@ -239,7 +234,7 @@ void Renderer::DrawBuffer()
 
 	UseProgram();
 
-	glfwSwapBuffers(AppWindow); // Swaps drawed buffer to the window you can see
+	glfwSwapBuffers(Window); // Swaps drawed buffer to the window you can see
 }
 
 

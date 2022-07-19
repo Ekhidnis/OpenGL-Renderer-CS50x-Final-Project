@@ -1,23 +1,32 @@
-#include "Application.h"
-#include "Statistics.h"
-#include "Renderer.h"
+#include "Window.hpp"
+#include "Statistics.hpp"
+#include "Renderer.hpp"
+
+
+void callback_windowsize(GLFWwindow* window, int width, int height)
+{
+	glfwSetWindowSize(window, width, height);
+}
 
 int main()
 {	
-	Statistics Statistics_("Runtime");
+	Statistics StatsRuntime_("Runtime");
 	
-	Application Application_;
-	if (!Application_.Ready()) { return Application_.GetStatusID(); };
+	Window Window_;
+	if (!Window_.Ready()) { return Window_.GetStatusID(); };
 
-	Renderer Renderer_(Application_.GetAppWindow());
+	Renderer Renderer_(Window_.GetAppWindow());
 	if (!Renderer_.Ready()) { return Renderer_.GetStatusID(); };
 
 
-	while (!glfwWindowShouldClose(Application_.GetAppWindow()))
+	while (!glfwWindowShouldClose(Window_.GetAppWindow()))
 	{
-		glfwPollEvents();
 		Renderer_.DrawBuffer();
-		Statistics_.framecount++;
+		StatsRuntime_.framecount++;
+
+
+		glfwPollEvents();
+		glfwSetWindowSizeCallback(Window_.GetAppWindow(), callback_windowsize);
 	};
 
 
