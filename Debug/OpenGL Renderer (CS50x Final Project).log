@@ -1,3 +1,5 @@
-﻿  Renderer.cpp
-C:\Users\PC1\source\repos\OpenGL Renderer (CS50x Final Project)\Renderer.cpp(32,34): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+﻿  Main.cpp
+  Renderer.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   OpenGL Renderer (CS50x Final Project).vcxproj -> C:\Users\PC1\source\repos\OpenGL Renderer (CS50x Final Project)\Debug\OpenGL Renderer (CS50x Final Project).exe

@@ -1,5 +1,10 @@
 #include "Shader.hpp"
 
+Shader::Shader(const char* shaderPath)
+{
+	shader = ReadShaderFile(shaderPath);
+}
+
 std::string Shader::ReadShaderFile(const char* shaderPath)
 {
 	std::string shaderCode;
@@ -8,26 +13,19 @@ std::string Shader::ReadShaderFile(const char* shaderPath)
 	shaderFile.exceptions(std::ifstream::badbit);
 	try
 	{
-		// Открываем файлы
 		shaderFile.open(shaderPath);
+
 		std::stringstream shaderStream;
-		// Считываем данные в потоки
+
 		shaderStream << shaderFile.rdbuf();
-		// Закрываем файлы
-		shaderFile.close();
-		// Преобразовываем потоки в массив GLchar
 		shaderCode = shaderStream.str();
+
+		shaderFile.close();
 	}
 	catch (std::ifstream::failure e)
 	{
-		std::cout << "Shader file " << shaderPath << " cannot be read" << std::endl;
+		std::cout << "Shader code located at '" << shaderPath << "' cannot be read." << std::endl;
 	}
 
 	return shaderCode;
-}
-
-void Shader::CreateFromFiles(const char* vShader, const char* fShader)
-{
-	std::string vShaderCode = ReadShaderFile(vShader);
-	std::string fShaderCode = ReadShaderFile(fShader);
 }

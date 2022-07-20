@@ -2,31 +2,26 @@
 #include "Statistics.hpp"
 #include "Renderer.hpp"
 
-
-void callback_windowsize(GLFWwindow* window, int width, int height)
-{
-	glfwSetWindowSize(window, width, height);
-}
-
 int main()
 {	
 	Statistics StatsRuntime_("Runtime");
 	
 	Window Window_;
 	if (!Window_.Ready()) { return Window_.GetStatusID(); };
+	GLFWwindow* MainWindow = Window_.GetAppWindow();
 
-	Renderer Renderer_(Window_.GetAppWindow());
+	Renderer Renderer_(MainWindow);
 	if (!Renderer_.Ready()) { return Renderer_.GetStatusID(); };
 
+	
 
-	while (!glfwWindowShouldClose(Window_.GetAppWindow()))
+	while (!glfwWindowShouldClose(MainWindow))
 	{
 		Renderer_.DrawBuffer();
 		StatsRuntime_.framecount++;
 
 
 		glfwPollEvents();
-		glfwSetWindowSizeCallback(Window_.GetAppWindow(), callback_windowsize);
 	};
 
 

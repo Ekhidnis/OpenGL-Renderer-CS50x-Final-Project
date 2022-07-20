@@ -6,7 +6,23 @@ Renderer::Renderer(GLFWwindow* GLFWwindow_)
 {
 	Window = GLFWwindow_;
 
+	static Shader VertexShader(PATH_SHADER_VERTEX);
+	static Shader FragmentShader(PATH_SHADER_FRAGMENT);
+	vertexShader = &VertexShader;
+	fragmentShader = &FragmentShader;
+
 	if (Window) { Initialize(); }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////* CALLBACKS *//////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void callback_windowsize(GLFWwindow* window, int width, int height)
+{
+	glfwSetWindowSize(window, width, height);
 }
 
 
@@ -27,11 +43,11 @@ int Renderer::Initialize()
 
 void Renderer::AdjustViewport()
 {
-	glfwGetFramebufferSize(Window, &WindowWidth, &WindowHeight);
+	glfwGetFramebufferSize(Window, &windowWidth, &windowHeight);
 
-	WindowAspectRatio = WindowWidth / WindowHeight;
+	windowAspectRatio = (float)windowWidth / (float)windowHeight;
 
-	glViewport(0, 0, WindowWidth, WindowHeight);
+	glViewport(0, 0, windowWidth, windowHeight);
 }
 
 void Renderer::Success()
@@ -69,8 +85,8 @@ std::string Renderer::GetStatusText()
 
 void Renderer::GetUniformLocations(int ShaderProgram)
 {
-	UniformModelMatrix = glGetUniformLocation(ShaderProgram, "model");
-	UniformProjectionMatrix = glGetUniformLocation(ShaderProgram, "projection");
+	uniformModelMatrix = glGetUniformLocation(ShaderProgram, "model");
+	uniformProjectionMatrix = glGetUniformLocation(ShaderProgram, "projection");
 }
 
 void Renderer::UpdateUniforms()
@@ -79,40 +95,40 @@ void Renderer::UpdateUniforms()
 		// x
 		if (translationDirectionX)
 		{
-			offsetTranslationX += StepLoc;
+			offsetTranslationX += STEP_LOC;
 		}
 		else
 		{
-			offsetTranslationX -= StepLoc;
+			offsetTranslationX -= STEP_LOC;
 		}
-		if (abs(offsetTranslationX) >= OffsetTranslationXLimit)
+		if (abs(offsetTranslationX) >= OFFSET_TRANSLATION_LIMIT_X)
 		{
 			translationDirectionX = !translationDirectionX;
 		}
 
 	// rotation
-		offsetRotationAngleZ += StepRot;
-		if (offsetRotationAngleZ >= offsetRotationLimit)
+		offsetRotationAngleZ += STEP_ROT;
+		if (offsetRotationAngleZ >= OFFSET_ROTATION_LIMIT)
 		{
-			offsetRotationAngleZ -= offsetRotationLimit;
+			offsetRotationAngleZ -= OFFSET_ROTATION_LIMIT;
 		}
 }
 
 void Renderer::AssignUniforms()
 {
 	// projection matrix
-	glm::mat4 projection = glm::perspective(fov, WindowAspectRatio, nearPlaneLength, farPlaneLength);
+	glm::mat4 projection = glm::perspective(FIELD_OF_VIEW, windowAspectRatio, FRUSTRUM_PLANE_NEAR, FRUSTRUM_PLANE_FAR);
 
-	glUniformMatrix4fv(UniformProjectionMatrix, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniformMatrix4fv(uniformProjectionMatrix, 1, GL_FALSE, glm::value_ptr(projection));
 	
 	// model matrix
 	glm::mat4 model{ 1.f };
 
 	model = glm::translate(model, glm::vec3(offsetTranslationX, offsetTranslationY, offsetTranslationZ));
-	model = glm::rotate(model, offsetRotationAngleZ * toRadians, glm::vec3(1.f, 1.f, 1.f));
+	model = glm::rotate(model, offsetRotationAngleZ * TO_RADIANS, glm::vec3(1.f, 1.f, 1.f));
 	model = glm::scale(model, glm::vec3(offsetScaleX, offsetScaleY, offsetScaleZ));
 	
-	glUniformMatrix4fv(UniformModelMatrix, 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(uniformModelMatrix, 1, GL_FALSE, glm::value_ptr(model));
 }
 
 
@@ -156,8 +172,8 @@ void Renderer::CompileShaderProgram()
 		Status = Errors::RendererFail;
 	};
 
-	if (NotInit) { AddShader(shaderProgram, VertexShader, GL_VERTEX_SHADER); }
-	if (NotInit) { AddShader(shaderProgram, FragmentShader, GL_FRAGMENT_SHADER); }
+	if (NotInit) { AddShader(shaderProgram, vertexShader->shader.c_str(), GL_VERTEX_SHADER); }
+	if (NotInit) { AddShader(shaderProgram, fragmentShader->shader.c_str(), GL_FRAGMENT_SHADER); }
 	if (NotInit) { LinkProgram(shaderProgram); }
 	if (NotInit) { ValidateProgram(shaderProgram); }
 	if (NotInit) { GetUniformLocations(shaderProgram);  }
@@ -235,6 +251,7 @@ void Renderer::DrawBuffer()
 	UseProgram();
 
 	glfwSwapBuffers(Window); // Swaps drawed buffer to the window you can see
+	glfwSetWindowSizeCallback(Window, callback_windowsize);
 }
 
 
@@ -252,7 +269,7 @@ bool Renderer::CheckShader(unsigned int Shader, GLenum ShaderType)
 	if (!result)
 	{
 		glGetProgramInfoLog(shaderProgram, sizeof(eLog), NULL, eLog);
-		std::cout << "AddShader failed. Couldn't compile " << ShaderType << " program. " << eLog << std::endl;
+		std::cout << "AddShader failed. Couldn't compile " << ShaderType << " program. \n" << eLog << std::endl;
 		
 		return false;
 	};
@@ -271,7 +288,7 @@ bool Renderer::LinkProgram(unsigned int shaderProgram)
 	if (!result)
 	{
 		glGetProgramInfoLog(shaderProgram, sizeof(eLog), NULL, eLog);
-		std::cout << "CompileShaderProgram failed. Couldn't link program. " << eLog << std::endl;
+		std::cout << "CompileShaderProgram failed. Couldn't link program. \n" << eLog << std::endl;
 
 		return false;
 	};
@@ -290,7 +307,7 @@ bool Renderer::ValidateProgram(unsigned int shaderProgram)
 	if (!result)
 	{
 		glGetProgramInfoLog(shaderProgram, sizeof(eLog), NULL, eLog);
-		std::cout << "CompileShaderProgram failed. Couldn't validate program. " << eLog << std::endl;
+		std::cout << "CompileShaderProgram failed. Couldn't validate program. \n" << eLog << std::endl;
 
 		return false;
 	};

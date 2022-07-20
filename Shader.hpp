@@ -9,9 +9,9 @@
 class Shader
 {
 public:
-	Shader();
-	~Shader();
+	Shader(const char* shaderPath);
+
+	std::string shader;
 
 	std::string ReadShaderFile(const char* shaderPath);
-	void CreateFromFiles(const char* vShader, const char* fShader);
 };
