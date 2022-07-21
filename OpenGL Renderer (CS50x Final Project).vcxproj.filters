@@ -19,6 +19,9 @@
     <Filter Include="Source\Shaders">
       <UniqueIdentifier>{9235ac8f-2ab3-41a5-8c55-062c2649747d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Meshes">
+      <UniqueIdentifier>{242393cd-837c-4468-8ebe-f5985aaf2a84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -36,6 +39,9 @@
     <ClCompile Include="Statistics.cpp">
       <Filter>Source\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source\Meshes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.hpp">
@@ -52,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="Errors.hpp">
       <Filter>Source\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.hpp">
+      <Filter>Source\Meshes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
