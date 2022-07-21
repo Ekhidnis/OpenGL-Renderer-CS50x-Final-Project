@@ -19,11 +19,8 @@ class Renderer
 public:
 	Renderer(GLFWwindow* Window);
 
-	const char* PATH_SHADER_VERTEX = "vertex.shader";
-	const char* PATH_SHADER_FRAGMENT = "fragment.shader";
-
-	Shader* vertexShader{ nullptr }; // mozhet sdelat array?
-	Shader* fragmentShader{ nullptr };
+	const char* PATH_SHADER_VERTEX = "./vertex.shader";
+	const char* PATH_SHADER_FRAGMENT = "./fragment.shader";
 
 	const char* TITLE = "Renderer";
 	struct Errors::Status Status = Errors::RendererNotInit;

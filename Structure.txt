@@ -1,6 +1,7 @@
 main
-	statistics statistics_
-	window window_
+	statistics
+	window
 		errors
-	renderer renderer_
+	renderer
+		shader
 		errors

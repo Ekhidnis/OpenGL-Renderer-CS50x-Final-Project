@@ -6,11 +6,6 @@ Renderer::Renderer(GLFWwindow* GLFWwindow_)
 {
 	Window = GLFWwindow_;
 
-	static Shader VertexShader(PATH_SHADER_VERTEX);
-	static Shader FragmentShader(PATH_SHADER_FRAGMENT);
-	vertexShader = &VertexShader;
-	fragmentShader = &FragmentShader;
-
 	if (Window) { Initialize(); }
 }
 
@@ -172,8 +167,16 @@ void Renderer::CompileShaderProgram()
 		Status = Errors::RendererFail;
 	};
 
-	if (NotInit) { AddShader(shaderProgram, vertexShader->shader.c_str(), GL_VERTEX_SHADER); }
-	if (NotInit) { AddShader(shaderProgram, fragmentShader->shader.c_str(), GL_FRAGMENT_SHADER); }
+	if (NotInit) 
+	{ 
+		Shader VertexShader(PATH_SHADER_VERTEX);
+		AddShader(shaderProgram, VertexShader.shader.c_str(), GL_VERTEX_SHADER); 
+	}
+	if (NotInit) 
+	{ 
+		Shader FragmentShader(PATH_SHADER_FRAGMENT);
+		AddShader(shaderProgram, FragmentShader.shader.c_str(), GL_FRAGMENT_SHADER); 
+	}
 	if (NotInit) { LinkProgram(shaderProgram); }
 	if (NotInit) { ValidateProgram(shaderProgram); }
 	if (NotInit) { GetUniformLocations(shaderProgram);  }

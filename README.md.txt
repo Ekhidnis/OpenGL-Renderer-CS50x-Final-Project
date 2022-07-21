@@ -2,8 +2,15 @@
 #### Video Demo:  <URL HERE>
 #### Description: Small-scale renderer made using OpenGL libraries on top of C++ language.
 
-## The Goal
+
+## Reasoning
 I understand and feel guilty that my project is not trying to bring anything useful to the world, but I can't withstand the urge to invest my time into learning engines and graphics, because it lights the fire in my eyes.
+
+
+## The Goal
+For the final project I want to have something 3D moving on a screen (most importantly I want to understand how the graphics are working), but after that I will proceed developing this engine. 
+I'm also interested in planning and architecture, so I set a secondary objective for which I will have to invest some time into these topics and have somewhat of an adequate code structure.
+
 
 ## Technical stack
 OpenGL - Open Graphics Library;
@@ -17,12 +24,38 @@ GLFW - I couldn't find what the abbreviature stands for. GLFW OpenGL library tha
 	To use GLFW we should include header (#include <GLFW/glfw3.h>)
 	Then we need to initialize it and check if the initialization was successful;
 
+GLM - OpenGL Mathematics library. Mostly used for vector and matrix operations.
+
+
+## Files
+Main.cpp - Defines the program itself. That's where program start and end.
+Structure.txt - Reflects current program structure
+Components/Window.* - Class responsible for creation of a window for program
+Components/Renderer.* - Class responsible for drawing on the given window
+Shaders/Shader.* - Class responsible for creation shaders (is read from the files)
+Shaders/*.shader - Raw data file responsible for storing GLSL shader code
+Utility/Errors.hpp - Namespace with struct responsible for structurization of error IDs and names
+Utility/Statistics.* - Class responsible for collecting useful info like runtime duration, renderered frames, frames per second 
+
+
 ## What it can do at the moment
-Create and initialize application (initializes opengl stack and operates created window)
+Create and initialize window (initializes opengl stack and operates created window)
 Create and initialize statistics (has timer and fps counter)
 Has Errors namespace where types of errors are declared and used throughout the code
-Draws triangle
-Moves triangle
+Draws object
+Moves object
+Rotates object
+Has projection(view space) and model(local space) matrixes
+
+
+## TODO
+Add camera movement
+Add mesh class
+Add object class
+Add textures
+Add ability to spawn or move or delete objects runtime
+And many more...
+
 
 ## What aspects I had to invest my time in and gain knowledge about
 Implementing libraries
