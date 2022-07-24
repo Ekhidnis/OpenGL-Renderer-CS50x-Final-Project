@@ -22,6 +22,9 @@
     <Filter Include="Source\Meshes">
       <UniqueIdentifier>{242393cd-837c-4468-8ebe-f5985aaf2a84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Meshes\Primitives">
+      <UniqueIdentifier>{0918222e-f33c-42d4-ba69-6a7ed0ff1d2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -42,6 +45,18 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Source\Meshes</Filter>
     </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>Source\Meshes\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source\Meshes\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>Source\Meshes\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Source\Meshes\Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.hpp">
@@ -61,6 +76,21 @@
     </ClInclude>
     <ClInclude Include="Mesh.hpp">
       <Filter>Source\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitive.hpp">
+      <Filter>Source\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.hpp">
+      <Filter>Source\Meshes\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.hpp">
+      <Filter>Source\Meshes\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.hpp">
+      <Filter>Source\Meshes\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.hpp">
+      <Filter>Source\Meshes\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

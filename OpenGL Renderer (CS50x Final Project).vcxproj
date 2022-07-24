@@ -151,15 +151,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Pyramid.cpp" />
+    <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Statistics.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cube.hpp" />
     <ClInclude Include="Mesh.hpp" />
+    <ClInclude Include="Plane.hpp" />
+    <ClInclude Include="Primitive.hpp" />
+    <ClInclude Include="Pyramid.hpp" />
+    <ClInclude Include="Triangle.hpp" />
     <ClInclude Include="Window.hpp" />
     <ClInclude Include="Errors.hpp" />
     <ClInclude Include="Renderer.hpp" />
